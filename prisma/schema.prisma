@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model User {
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  email     String     @unique
+  password  String
+  firstName String
+  lastName  String
+  documents Document[]
+}
+
+model Document {
+  id              Int               @id @default(autoincrement())
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  title           String            @db.VarChar(255)
+  notes           String?
+  category        Category          @relation(fields: [categoryId], references: [id])
+  categoryId      Int
+  TagsOnDocuments TagsOnDocuments[]
+  User            User?             @relation(fields: [userId], references: [id])
+  userId          Int?
+}
+
+model Tag {
+  id              Int               @id @default(autoincrement())
+  name            String
+  TagsOnDocuments TagsOnDocuments[]
+}
+
+model Category {
+  id       Int        @id @default(autoincrement())
+  name     String
+  Document Document[]
+}
+
+model TagsOnDocuments {
+  document   Document @relation(fields: [documentId], references: [id])
+  documentId Int // relation scalar field (used in the `@relation` attribute above)
+  tag        Tag      @relation(fields: [tagId], references: [id])
+  tagId      Int // relation scalar field (used in the `@relation` attribute above)
+
+  @@id([documentId, tagId])
+}
