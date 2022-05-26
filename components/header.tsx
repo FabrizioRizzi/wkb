@@ -6,20 +6,10 @@ import getTags from "../pages/api/tags";
 
 const Header = () => {
   const { data: session, status } = useSession();
-  useEffect(() => {
-    const vai = async () => {
-      const tags = await fetch('http://localhost:3000/api/tags');
-      if (tags.status == 200) {
-        const res = await tags.json();
-        console.log(res);
-      }
-    }
-    vai();
-  }, [])
-    
+
   return (
     <Flex padding={2} bg="purple.700" justify="space-between" align="center">
-      <Box>wkb</Box>
+      <Box color="gray.200">web-knowledge-base</Box>
       {status === "authenticated" && session ? (
         <Flex gap={2}>
           <Box>
