@@ -2,7 +2,6 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import { Box, Button, Flex } from "@chakra-ui/react";
 import { useEffect } from "react";
-import getTags from "../pages/api/tags";
 
 const Header = () => {
   const { data: session, status } = useSession();
