@@ -9,13 +9,12 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { Category, Tag as TagType } from ".prisma/client";
+import SettingsCard from "../components/settingsCard";
 
 const Settings = () => {
   const [tags, setTags] = useState<TagType[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [tag, setTag] = useState("");
-  const [category, setCategory] = useState("");
-  
+
   const loadTags = async () => {
     const tags = await fetch("http://localhost:3000/api/tag");
     setTags(await tags.json());
@@ -26,14 +25,14 @@ const Settings = () => {
     setCategories(await categories.json());
   };
 
-  const insert = () => {
+  const insertTag = (name: string) => {
     fetch("http://localhost:3000/api/tag", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name: tag }),
+      body: JSON.stringify({ name }),
     }).then(() => loadTags());
   };
 
@@ -48,14 +47,14 @@ const Settings = () => {
     }).then(() => loadTags());
   };
 
-  const insertCategory = () => {
+  const insertCategory = (name: string) => {
     fetch("http://localhost:3000/api/category", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name: category }),
+      body: JSON.stringify({ name }),
     }).then(() => loadCategories());
   };
 
@@ -70,9 +69,6 @@ const Settings = () => {
     }).then(() => loadCategories());
   };
 
-  const handleChange = (event) => setTag(event.target.value);
-  const handleChangeCategory = (event) => setCategory(event.target.value);
-
   useEffect(() => {
     loadTags();
     loadCategories();
@@ -80,44 +76,21 @@ const Settings = () => {
 
   return (
     <Flex justifyContent="center" margin={5} gap={5} wrap="wrap">
-      <Box boxSize="sm" bgColor="gray.100" padding={3} borderRadius={10}>
-        <Box>Tags</Box>
-        <Button onClick={loadTags}>Load</Button>
-        <Flex gap={2} wrap="wrap">
-          {tags.map((tag) => (
-            <Tag colorScheme="purple" key={tag.id} width="min-content">
-              <TagLabel>{tag.name}</TagLabel>
-              <TagCloseButton onClick={() => deleteTag(tag.id)} />
-            </Tag>
-          ))}
-        </Flex>
-        <Input
-          value={tag}
-          onChange={handleChange}
-          placeholder="Here is a sample placeholder"
-          size="sm"
-        />
-        <Button onClick={insert}>Insert</Button>
-      </Box>
-      <Box boxSize="sm" bgColor="gray.100" padding={3} borderRadius={10}>
-        <Box>Categories</Box>
-        <Button onClick={loadTags}>Load</Button>
-        <Flex gap={2} wrap="wrap">
-          {categories.map((category) => (
-            <Tag colorScheme="purple" key={category.id} width="min-content">
-              <TagLabel>{category.name}</TagLabel>
-              <TagCloseButton onClick={() => deleteCategory(category.id)} />
-            </Tag>
-          ))}
-        </Flex>
-        <Input
-          value={category}
-          onChange={handleChangeCategory}
-          placeholder="Here is a sample placeholder"
-          size="sm"
-        />
-        <Button onClick={insertCategory}>Insert</Button>
-      </Box>
+      <SettingsCard
+        title="Tags"
+        elements={tags}
+        onLoad={loadTags}
+        onDelete={deleteTag}
+        onAdd={insertTag}
+      />
+
+      <SettingsCard
+        title="Categories"
+        elements={categories}
+        onLoad={loadCategories}
+        onDelete={deleteCategory}
+        onAdd={insertCategory}
+      />
     </Flex>
   );
 };
