@@ -1,78 +1,41 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Input,
-  Tag,
-  TagCloseButton,
-  TagLabel,
-} from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { Category, Tag as TagType } from ".prisma/client";
 import SettingsCard from "../components/settingsCard";
+import {fetchDelete, fetchGet, fetchPost } from '../lib/fetchUtils';
 
 const Settings = () => {
   const [tags, setTags] = useState<TagType[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
 
   const loadTags = async () => {
-    const tags = await fetch("http://localhost:3000/api/tag");
-    setTags(await tags.json());
+    setTags(await fetchGet("http://localhost:3000/api/tag"));
   };
 
   const loadCategories = async () => {
-    const categories = await fetch("http://localhost:3000/api/category");
-    setCategories(await categories.json());
+    setCategories(await fetchGet("http://localhost:3000/api/category"));
   };
 
   const insertTag = (name: string) => {
-    fetch("http://localhost:3000/api/tag", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name }),
-    }).then(() => loadTags());
+    fetchPost("http://localhost:3000/api/tag", { name }).then(() => loadTags());
   };
 
   const deleteTag = (id: number) => {
-    fetch("http://localhost:3000/api/tag", {
-      method: "DELETE",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id }),
-    }).then(() => loadTags());
+    fetchDelete("http://localhost:3000/api/tag", { id }).then(() => loadTags());
   };
 
   const insertCategory = (name: string) => {
-    fetch("http://localhost:3000/api/category", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name }),
-    }).then(() => loadCategories());
+    fetchPost("http://localhost:3000/api/category", { name }).then(() => loadCategories());
   };
 
   const deleteCategory = (id: number) => {
-    fetch("http://localhost:3000/api/category", {
-      method: "DELETE",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id }),
-    }).then(() => loadCategories());
+    fetchDelete("http://localhost:3000/api/category", { id }).then(() => loadCategories());
   };
 
   useEffect(() => {
     loadTags();
     loadCategories();
-  }, [loadTags]);
+  }, [loadTags, loadCategories]);
 
   return (
     <Flex justifyContent="center" margin={5} gap={5} wrap="wrap">

@@ -9,13 +9,17 @@ const Header = () => {
   return (
     <Flex padding={2} bg="purple.700" justify="space-between" align="center">
       <Link href="/">
-        <Box color="gray.200" cursor="pointer">web-knowledge-base</Box>
+        <Box color="gray.200" cursor="pointer">
+          web-knowledge-base
+        </Box>
       </Link>
       {status === "authenticated" && session ? (
         <Flex gap={2} alignItems="center">
           <Box cursor="pointer">
             <Link href="/settings">
-              <FiSettings color="white" size={24}/>
+              <a>
+                <FiSettings color="white" size={24} />
+              </a>
             </Link>
           </Box>
           <Box>

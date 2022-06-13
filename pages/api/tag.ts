@@ -1,7 +1,7 @@
 import { getSession } from "next-auth/react";
-import prisma from "../../lib/prisma";
+import { prisma } from "../../lib/prisma";
 
-const getTasks = async (res) => {
+const getTags = async (res) => {
   const tags = await prisma.tag.findMany({});
   return res.status(200).json(tags);
 };
@@ -21,7 +21,7 @@ const handler = async (req, res) => {
   if (session) {
     switch (req.method) {
       case "GET":
-        return getTasks(res);
+        return getTags(res);
       case "POST":
         return insertTag(req, res);
       case "DELETE":
