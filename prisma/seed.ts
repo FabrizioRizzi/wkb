@@ -10,9 +10,7 @@ const run = async () => {
     update: {},
     create: {
       email: "fabrizio@fabriziorizzi.it",
-      firstName: "Fabrizio",
-      lastName: "Rizzi",
-      password: bcrypt.hashSync("password", salt),
+      name: "Fabrizio Rizzi"
     },
   });
 };
