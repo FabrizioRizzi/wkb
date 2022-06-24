@@ -37,7 +37,7 @@
       {
         "namedComponents": "arrow-function",
         "unnamedComponents": "arrow-function"
-      },
+      }
     ],
     "prettier/prettier": "warn"
   }
