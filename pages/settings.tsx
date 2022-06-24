@@ -1,20 +1,20 @@
 import { Flex } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
-import { Category, Tag as TagType } from ".prisma/client";
+import { useState, useEffect, useCallback } from "react";
+import { Category, Tag as TagType } from "@prisma/client";
 import SettingsCard from "../components/settingsCard";
-import {fetchDelete, fetchGet, fetchPost } from '../lib/fetchUtils';
+import { fetchDelete, fetchGet, fetchPost } from "../lib/fetchUtils";
 
 const Settings = () => {
   const [tags, setTags] = useState<TagType[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
 
-  const loadTags = async () => {
+  const loadTags = useCallback(async () => {
     setTags(await fetchGet("http://localhost:3000/api/tag"));
-  };
+  }, []);
 
-  const loadCategories = async () => {
+  const loadCategories = useCallback(async () => {
     setCategories(await fetchGet("http://localhost:3000/api/category"));
-  };
+  }, []);
 
   const insertTag = (name: string) => {
     fetchPost("http://localhost:3000/api/tag", { name }).then(() => loadTags());
@@ -25,11 +25,15 @@ const Settings = () => {
   };
 
   const insertCategory = (name: string) => {
-    fetchPost("http://localhost:3000/api/category", { name }).then(() => loadCategories());
+    fetchPost("http://localhost:3000/api/category", { name }).then(() =>
+      loadCategories()
+    );
   };
 
   const deleteCategory = (id: number) => {
-    fetchDelete("http://localhost:3000/api/category", { id }).then(() => loadCategories());
+    fetchDelete("http://localhost:3000/api/category", { id }).then(() =>
+      loadCategories()
+    );
   };
 
   useEffect(() => {

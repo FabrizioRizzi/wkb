@@ -7,7 +7,9 @@ const getCategories = async (res) => {
 };
 
 const insertCategory = async (req, res) => {
-  const category = await prisma.category.create({ data: { name: req.body.name } });
+  const category = await prisma.category.create({
+    data: { name: req.body.name },
+  });
   return res.status(200).json(category);
 };
 
@@ -18,7 +20,7 @@ const deleteCategory = async (req, res) => {
 
 const handler = async (req, res) => {
   const session = await getSession({ req });
-  if (session) {
+  if (session?.user) {
     switch (req.method) {
       case "GET":
         return getCategories(res);

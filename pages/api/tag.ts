@@ -18,7 +18,7 @@ const deleteTag = async (req, res) => {
 
 const handler = async (req, res) => {
   const session = await getSession({ req });
-  if (session) {
+  if (session?.user) {
     switch (req.method) {
       case "GET":
         return getTags(res);

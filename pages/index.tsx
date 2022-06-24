@@ -1,62 +1,63 @@
 import {
   Box,
   Button,
+  SkeletonText,
   Table,
   TableContainer,
   Tbody,
+  Td,
   Th,
   Thead,
   Tr,
 } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
-import { Document as DocumentType } from ".prisma/client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { Document as DocumentType } from "@prisma/client";
 import { fetchGet } from "../lib/fetchUtils";
 import DocumentRow from "../components/documentRow";
 
 const Home = () => {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [docs, setDocs] = useState<DocumentType[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const size = "1";
 
-  const loadDocs = async () => {
-    setDocs(
-      await fetchGet(
-        "http://localhost:3000/api/document?" +
-          new URLSearchParams({
-            size,
-          })
-      )
+  const loadDocsTagsAndCategories = useCallback(async () => {
+    setLoading(true);
+    const newDocs = await fetchGet(
+      `http://localhost:3000/api/document?${new URLSearchParams({ size })}`
     );
-  };
+    setDocs(newDocs);
+    setLoading(false);
+  }, []);
 
   const prevPage = async () => {
-    setDocs(
-      await fetchGet(
-        "http://localhost:3000/api/document?" +
-          new URLSearchParams({
-            size,
-            firstCursor: docs[0].id.toString(),
-          })
-      )
+    setLoading(true);
+    const newDocs = await fetchGet(
+      `http://localhost:3000/api/document?${new URLSearchParams({
+        size,
+        firstCursor: docs[0].id.toString(),
+      })}`
     );
+    setDocs(newDocs);
+    setLoading(false);
   };
 
   const nextPage = async () => {
-    setDocs(
-      await fetchGet(
-        "http://localhost:3000/api/document?" +
-          new URLSearchParams({
-            size,
-            lastCursor: docs[docs.length - 1].id.toString(),
-          })
-      )
+    setLoading(true);
+    const newDocs = await fetchGet(
+      `http://localhost:3000/api/document?${new URLSearchParams({
+        size,
+        lastCursor: docs[docs.length - 1].id.toString(),
+      })}`
     );
+    setDocs(newDocs);
+    setLoading(false);
   };
 
   useEffect(() => {
-    loadDocs();
-  }, []);
+    loadDocsTagsAndCategories();
+  }, [loadDocsTagsAndCategories]);
 
   return status !== "loading" ? (
     <Box>
@@ -72,9 +73,27 @@ const Home = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {docs.map((doc) => (
-              <DocumentRow key={doc.id} document={doc} />
-            ))}
+            {loading ? (
+              <Tr>
+                <Td>
+                  <SkeletonText noOfLines={1} />
+                </Td>
+                <Td>
+                  <SkeletonText noOfLines={1} />
+                </Td>
+                <Td>
+                  <SkeletonText noOfLines={1} />
+                </Td>
+                <Td>
+                  <SkeletonText noOfLines={1} />
+                </Td>
+                <Td>
+                  <SkeletonText noOfLines={1} />
+                </Td>
+              </Tr>
+            ) : (
+              docs.map((doc) => <DocumentRow key={doc.id} document={doc} />)
+            )}
           </Tbody>
         </Table>
       </TableContainer>

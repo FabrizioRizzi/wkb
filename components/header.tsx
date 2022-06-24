@@ -3,6 +3,8 @@ import Image from "next/image";
 import { Box, Button, Flex } from "@chakra-ui/react";
 import { FiSettings } from "react-icons/fi";
 import Link from "next/link";
+import AddDocumentModal from "./addDocumentModal";
+
 const Header = () => {
   const { data: session, status } = useSession();
 
@@ -15,11 +17,10 @@ const Header = () => {
       </Link>
       {status === "authenticated" && session ? (
         <Flex gap={2} alignItems="center">
+          <AddDocumentModal />
           <Box cursor="pointer">
             <Link href="/settings">
-              <a>
-                <FiSettings color="white" size={24} />
-              </a>
+              <FiSettings color="white" size={24} />
             </Link>
           </Box>
           <Box>

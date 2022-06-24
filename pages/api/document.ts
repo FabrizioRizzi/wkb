@@ -12,7 +12,7 @@ const getDocs = async (res, req) => {
       },
       include: {
         tags: true,
-        category: true
+        category: true,
       },
     });
   } else if (req.query.firstCursor) {
@@ -24,7 +24,7 @@ const getDocs = async (res, req) => {
       },
       include: {
         tags: true,
-        category: true
+        category: true,
       },
     });
   } else {
@@ -32,19 +32,28 @@ const getDocs = async (res, req) => {
       take: Number(req.query.size),
       include: {
         tags: true,
-        category: true
+        category: true,
       },
     });
   }
   return res.status(200).json(documents);
 };
 
-/* 
-const insertTag = async (req, res) => {
-  const tag = await prisma.tag.create({ data: { name: req.body.name } });
-  return res.status(200).json(tag);
+const insertDocument = async (req, res) => {
+  const session = await getSession({ req });
+  const document = await prisma.document.create({
+    data: {
+      title: req.body.title,
+      url: req.body.url,
+      user: { connect: { id: session.user.id } },
+      category: { connect: { id: req.body.category } },
+      tags: { connect: req.body.tags },
+    },
+  });
+  return res.status(200).json(`Document ${document.id} created`);
 };
 
+/*
 const deleteTag = async (req, res) => {
   const tag = await prisma.tag.delete({ where: { id: req.body.id } });
   return res.status(200).json(tag);
@@ -52,10 +61,12 @@ const deleteTag = async (req, res) => {
 
 const handler = async (req, res) => {
   const session = await getSession({ req });
-  if (session) {
+  if (session?.user) {
     switch (req.method) {
       case "GET":
         return getDocs(res, req);
+      case "POST":
+        return insertDocument(req, res);
       default:
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }

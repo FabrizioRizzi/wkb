@@ -10,13 +10,13 @@ const DocumentRow = ({ document }) => (
       </Link>
     </Td>
     <Td>
-      {document.tags.map((tag) => (
+      {document.tags?.map((tag) => (
         <Tag size="sm" marginInlineEnd="1" color="teal">
           {tag.name}
         </Tag>
       ))}
     </Td>
-    <Td>{document.category.name}</Td>
+    <Td>{document.category?.name}</Td>
   </Tr>
 );
 

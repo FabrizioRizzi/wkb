@@ -1,7 +1,6 @@
 export const fetchGet = (url) => {
-  return fetch(url).then(res => res.json())
+  return fetch(url).then((res) => res.json());
 };
-
 
 export const fetchPost = (url, req) => {
   return fetch(url, {

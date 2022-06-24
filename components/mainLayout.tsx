@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/layout";
+import { Box } from "@chakra-ui/react";
 import Header from "./header";
 
 const MainLayout = ({ children }) => (
@@ -6,9 +6,7 @@ const MainLayout = ({ children }) => (
     <Box height={14}>
       <Header />
     </Box>
-    <Box height="calc(100vh - 100px)">
-      {children}
-    </Box>
+    <Box height="calc(100vh - 100px)">{children}</Box>
   </Box>
 );
 
